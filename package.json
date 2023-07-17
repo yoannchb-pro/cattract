@@ -1,0 +1,35 @@
+{
+  "name": "cattract",
+  "version": "1.0.0",
+  "description": "Animate anything just like it was attracted by the cursor",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoannchb-pro/cattract.git"
+  },
+  "keywords": [
+    "animation",
+    "attraction",
+    "circle",
+    "round",
+    "typescript",
+    "javascript"
+  ],
+  "author": "yoannchb",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yoannchb-pro/cattract/issues"
+  },
+  "homepage": "https://github.com/yoannchb-pro/cattract#readme",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
+    "@types/node": "^20.3.3",
+    "rollup": "^3.26.0",
+    "rollup-plugin-ts": "^3.2.0",
+    "typescript": "^4.9.5"
+  }
+}

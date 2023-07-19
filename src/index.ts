@@ -1,4 +1,4 @@
-type With3d = {
+type With3dOptions = {
   axe?: "x" | "y";
   inverted?: boolean | "x" | "y";
   maxAngle?: number;
@@ -12,9 +12,14 @@ type Options = {
     ease?: string;
     duration?: number;
   };
+  scale?: {
+    from?: number;
+    to?: number;
+    animated?: boolean;
+  };
   inverted?: boolean | "x" | "y";
   axe?: "x" | "y";
-  with_3d?: boolean | With3d;
+  with_3d?: boolean | With3dOptions;
 };
 
 //all the instance of Cattract class
@@ -29,7 +34,7 @@ const defaultOptions: Options = {
   },
 };
 
-const default3dOptions: With3d = {
+const default3dOptions: With3dOptions = {
   maxAngle: 45,
   perspective: 500,
 };
@@ -74,9 +79,7 @@ class Cattract {
    * @returns
    */
   private getScreenRadius() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    return Math.sqrt(width * width + height * height) / 2;
+    return Math.max(window.innerWidth, window.innerHeight) / 2;
   }
 
   /**
@@ -94,6 +97,53 @@ class Cattract {
       delta.y = -1;
     }
     return delta;
+  }
+
+  /**
+   * Create a circle for the debug
+   * @param radius
+   * @returns
+   */
+  private createCircle(radius: number, color: string) {
+    const circle = document.createElement("div");
+    circle.setAttribute(
+      "style",
+      `
+      position: absolute;
+      background-color: transparent;
+      width: ${radius * 2}px;
+      aspect-ratio: 1/1;
+      border: thin ${color} solid;
+      border-radius: 100%;
+    `
+        .replace(/\n+/g, "")
+        .replace(/\s+/g, " ")
+    );
+    return circle;
+  }
+
+  /**
+   * Display circle for detection zone and the element circle for better debugging
+   * @param color
+   */
+  debug(color: string = "#e1e1e130") {
+    const append = (element: HTMLDivElement) => {
+      this.target.parentNode.insertBefore(element, this.target);
+    };
+
+    const elementRadiusCircle = this.createCircle(
+      this.options.elementRadius,
+      color
+    );
+    append(elementRadiusCircle);
+
+    if (this.options.detectionRadius !== "full") {
+      const detectionRadiusCircle = this.createCircle(
+        this.options.detectionRadius,
+        color
+      );
+      append(detectionRadiusCircle);
+    }
   }
 
   /**
@@ -130,7 +180,7 @@ class Cattract {
 
       /* Handle 3D effect */
       if (this.options.with_3d) {
-        const options3d = this.options.with_3d as With3d;
+        const options3d = this.options.with_3d as With3dOptions;
         const delta = this.getDeltaFromInvertion(options3d.inverted);
         const computedAngle = options3d.maxAngle * pourcentage;
         transformations.push(`perspective(${options3d.perspective}px)`);
@@ -138,6 +188,15 @@ class Cattract {
           transformations.push(`rotateX(${ty * computedAngle * delta.x}deg)`);
         if (!options3d.axe || options3d.axe === "y")
           transformations.push(`rotateY(${-tx * computedAngle * delta.y}deg)`);
+      }
+
+      /* Handle scale */
+      if (this.options.scale?.to) {
+        const scaleOptions = this.options.scale;
+        const scaleFrom = scaleOptions.from ?? 1;
+        let finalScale = scaleOptions.to - scaleFrom;
+        if (scaleOptions.animated) finalScale *= pourcentage;
+        transformations.push(`scale(${scaleFrom + finalScale})`);
       }
 
       /* Handle translation */
@@ -153,7 +212,9 @@ class Cattract {
 
       this.applyTranslation(transformations.join(" "));
     } else {
-      this.applyTranslation("none");
+      if (this.options.scale?.from)
+        this.applyTranslation(`scale(${this.options.scale.from})`);
+      else this.applyTranslation("none");
     }
   }
 
@@ -161,8 +222,10 @@ class Cattract {
    * Start attraction animation
    */
   start() {
-    this.target.style.willChange = "trasnform";
+    this.target.style.willChange = "transform";
     if (this.options.with_3d) this.target.style.transformStyle = "preserve-3d";
+    if (this.options.scale?.from)
+      this.target.style.transform = `scale(${this.options.scale.from})`;
     instances.push(this);
   }
 

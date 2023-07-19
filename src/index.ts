@@ -1,3 +1,10 @@
+type With3d = {
+  axe?: "x" | "y";
+  inverted?: boolean | "x" | "y";
+  maxAngle?: number;
+  perspective?: number;
+};
+
 type Options = {
   elementRadius?: number;
   detectionRadius?: number | "full";
@@ -7,14 +14,7 @@ type Options = {
   };
   inverted?: boolean | "x" | "y";
   axe?: "x" | "y";
-  with_3d?:
-    | boolean
-    | {
-        axe?: "x" | "y";
-        inverted?: boolean | "x" | "y";
-        maxAngle?: number;
-        perspective?: number;
-      };
+  with_3d?: boolean | With3d;
 };
 
 //all the instance of Cattract class
@@ -29,7 +29,7 @@ const defaultOptions: Options = {
   },
 };
 
-const default3dOptions: Options["with_3d"] = {
+const default3dOptions: With3d = {
   maxAngle: 45,
   perspective: 500,
 };
@@ -130,7 +130,7 @@ class Cattract {
 
       /* Handle 3D effect */
       if (this.options.with_3d) {
-        const options3d = this.options.with_3d as any; //TODO: Fixe this any
+        const options3d = this.options.with_3d as With3d;
         const delta = this.getDeltaFromInvertion(options3d.inverted);
         const computedAngle = options3d.maxAngle * pourcentage;
         transformations.push(`perspective(${options3d.perspective}px)`);

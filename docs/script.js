@@ -5,11 +5,13 @@ const githubLink = new Cattract(document.querySelector(".github-btn-link"), {
 
 const examples = document.querySelector(".examples");
 
+const defaultOptions = {
+  elementRadius: 50,
+  detectionRadius: 120,
+};
+
 const options = [
-  {
-    elementRadius: 50,
-    detectionRadius: 120,
-  },
+  {},
   {
     animation: {
       ease: "ease-in",
@@ -46,7 +48,7 @@ function createExample(option) {
   example.appendChild(btn);
   examples.appendChild(example);
 
-  const animation = new Cattract(btn, option);
+  const animation = new Cattract(btn, { ...defaultOptions, ...option });
   animation.debug();
 }
 

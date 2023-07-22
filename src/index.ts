@@ -40,6 +40,8 @@ const default3dOptions: With3dOptions = {
 };
 
 class Cattract {
+  private translation = { x: 0, y: 0 };
+
   /**
    * Create a circle attraction animation on an element
    * @param target The element you want to be animated
@@ -73,6 +75,7 @@ class Cattract {
       fill: "forwards",
       easing: this.options.animation.ease,
     });
+    // this.target.style.transform = translation;
   }
 
   /**
@@ -155,22 +158,22 @@ class Cattract {
    * @param y The y position of the cursor
    */
   update(x: number, y: number) {
-    /* We don't use getBoundingClientRect to avoid translation */
-    const rect = {
-      top: this.target.offsetTop,
-      left: this.target.offsetLeft,
-      width: this.target.offsetWidth,
-      height: this.target.offsetHeight,
-    };
-    const targetMiddleX = rect.left + rect.width / 2;
-    const targetMiddleY = rect.top + rect.height / 2;
+    //TODO: Fixe this shit
+    const rect = this.target.getBoundingClientRect();
+    const width = this.target.offsetWidth;
+    const height = this.target.offsetHeight;
+    const targetMiddleX = rect.left - this.translation.x + width / 2;
+    const targetMiddleY = rect.top - this.translation.y + height / 2;
+
     const [dx, dy] = [x - targetMiddleX, y - targetMiddleY];
     const mouseRadius = Math.sqrt(dx * dx + dy * dy);
+
     if (
       this.options.detectionRadius === "full" ||
       mouseRadius <= this.options.detectionRadius
     ) {
       const transformations: string[] = [];
+
       const hypp = Math.sqrt(dx * dx + dy * dy);
       const tx = hypp === 0 ? 0 : dx / hypp;
       const ty = hypp === 0 ? 0 : dy / hypp;
@@ -208,13 +211,18 @@ class Cattract {
         tx * computedRadius * delta.x,
         ty * computedRadius * delta.y,
       ];
-      if (!this.options.axe || this.options.axe === "x")
+      if (!this.options.axe || this.options.axe === "x") {
+        this.translation.x = transX;
         transformations.push(`translateX(${transX}px)`);
-      if (!this.options.axe || this.options.axe === "y")
+      }
+      if (!this.options.axe || this.options.axe === "y") {
+        this.translation.y = transY;
         transformations.push(`translateY(${transY}px)`);
+      }
 
       this.applyTranslation(transformations.join(" "));
     } else {
+      this.translation = { x: 0, y: 0 };
       if (this.options.scale?.from)
         this.applyTranslation(`scale(${this.options.scale.from})`);
       else this.applyTranslation("none");

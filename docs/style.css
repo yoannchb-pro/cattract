@@ -71,3 +71,19 @@ button {
   padding: 0.5rem 0.8rem;
   cursor: initial;
 }
+
+/* @media (max-width: 768px) {
+  .main-section {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .presentation {
+    text-align: center;
+    height: 100vh;
+  }
+
+  .examples {
+    flex-direction: column;
+  }
+} */

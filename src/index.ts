@@ -40,8 +40,6 @@ const default3dOptions: With3dOptions = {
 };
 
 class Cattract {
-  private translation = { x: 0, y: 0 };
-
   /**
    * Create a circle attraction animation on an element
    * @param target The element you want to be animated
@@ -153,17 +151,58 @@ class Cattract {
   }
 
   /**
+   * Get the actual needed transformation properties of the element
+   * @returns
+   */
+  private getTransformation() {
+    const computedStyles = window.getComputedStyle(this.target);
+    const transformValue = computedStyles.transform;
+    let translationX = 0;
+    let translationY = 0;
+    let scaleX = 1;
+    let scaleY = 1;
+
+    if (transformValue && transformValue !== "none") {
+      const matrixRegex = /(matrix3d|matrix)\(([^)]+)\)/;
+      const match = transformValue.match(matrixRegex);
+
+      if (match) {
+        const matrixValues = match[2].split(",").map(parseFloat);
+
+        if (match[1] === "matrix") {
+          // 2D transformation matrix
+          scaleX = matrixValues[0];
+          scaleY = matrixValues[3];
+          translationX = matrixValues[4];
+          translationY = matrixValues[5];
+        } else if (match[1] === "matrix3d") {
+          // 3D transformation matrix
+          scaleX = matrixValues[0];
+          scaleY = matrixValues[5];
+          translationX = matrixValues[12];
+          translationY = matrixValues[13];
+          // const translationZ = matrixValues[14];
+          // const scaleZ = matrixValues[10];
+        }
+      }
+    }
+
+    return { translationX, translationY, scaleX, scaleY };
+  }
+
+  /**
    * Update the position of the targer
    * @param x The x position of the cursor
    * @param y The y position of the cursor
    */
   update(x: number, y: number) {
-    //TODO: Fixe this shit
+    //TODO: Fixe this shit (fuckng lagging)
     const rect = this.target.getBoundingClientRect();
-    const width = this.target.offsetWidth;
-    const height = this.target.offsetHeight;
-    const targetMiddleX = rect.left - this.translation.x + width / 2;
-    const targetMiddleY = rect.top - this.translation.y + height / 2;
+    const trans = this.getTransformation();
+    const width = rect.width / trans.scaleX;
+    const height = rect.height / trans.scaleY;
+    const targetMiddleX = rect.left - trans.translationX + width / 2;
+    const targetMiddleY = rect.top - trans.translationY + height / 2;
 
     const [dx, dy] = [x - targetMiddleX, y - targetMiddleY];
     const mouseRadius = Math.sqrt(dx * dx + dy * dy);
@@ -211,18 +250,14 @@ class Cattract {
         tx * computedRadius * delta.x,
         ty * computedRadius * delta.y,
       ];
-      if (!this.options.axe || this.options.axe === "x") {
-        this.translation.x = transX;
+      if (!this.options.axe || this.options.axe === "x")
         transformations.push(`translateX(${transX}px)`);
-      }
-      if (!this.options.axe || this.options.axe === "y") {
-        this.translation.y = transY;
+
+      if (!this.options.axe || this.options.axe === "y")
         transformations.push(`translateY(${transY}px)`);
-      }
 
       this.applyTranslation(transformations.join(" "));
     } else {
-      this.translation = { x: 0, y: 0 };
       if (this.options.scale?.from)
         this.applyTranslation(`scale(${this.options.scale.from})`);
       else this.applyTranslation("none");

@@ -105,6 +105,7 @@ details {
   }
 
   .presentation {
+    position: initial;
     text-align: center;
     display: flex;
     justify-content: center;

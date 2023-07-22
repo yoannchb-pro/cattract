@@ -43,7 +43,14 @@ function createExample(option) {
   example.className = "example-block";
 
   const btn = document.createElement("button");
-  btn.textContent = "Hello World !";
+  if (option.with_3d) {
+    btn.style.transformStyle = "preserve-3d";
+    btn.style.perspective = "500px";
+    const text = document.createElement("p");
+    text.style.transform = "translateZ(10px)";
+    text.textContent = "Hover me";
+    btn.appendChild(text);
+  } else btn.textContent = "Hover me";
 
   example.appendChild(btn);
   examples.appendChild(example);

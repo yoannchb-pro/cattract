@@ -59,6 +59,7 @@ class Cattract {
         this.options.with_3d
       );
     }
+    this.target.style.transformOrigin = "center";
     this.start();
   }
 
@@ -127,6 +128,8 @@ class Cattract {
    * @param color
    */
   debug(color: string = "#e1e1e130") {
+    this.target.parentElement.style.position = "relative";
+
     const append = (element: HTMLDivElement) => {
       this.target.parentNode.insertBefore(element, this.target);
     };

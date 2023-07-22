@@ -39,6 +39,8 @@ const options = [
 ];
 
 function createExample(option) {
+  const finalOption = { ...defaultOptions, ...option };
+
   const example = document.createElement("article");
   example.className = "example-block";
 
@@ -52,13 +54,37 @@ function createExample(option) {
     btn.appendChild(text);
   } else btn.textContent = "Hover me";
 
+  const details = document.createElement("details");
+  const summary = document.createElement("summary");
+  const codeIcon = document.createElement("i");
+  codeIcon.className = "fa-solid fa-code";
+  const code = `new Cattract(element, ${JSON.stringify(
+    finalOption,
+    undefined,
+    4
+  )})`;
+  const overlay = document.createElement("div");
+  overlay.className = "overlay-code";
+  const pre = document.createElement("pre");
+  const codeElement = document.createElement("code");
+  codeElement.textContent = code;
+  codeElement.className = "language-javascript";
+  pre.appendChild(codeElement);
+  summary.appendChild(codeIcon);
+  details.appendChild(summary);
+  overlay.appendChild(pre);
+  details.appendChild(overlay);
+
+  example.appendChild(details);
   example.appendChild(btn);
   examples.appendChild(example);
 
-  const animation = new Cattract(btn, { ...defaultOptions, ...option });
+  const animation = new Cattract(btn, finalOption);
   animation.debug();
 }
 
 for (const option of options) {
   createExample(option);
 }
+
+hljs.initHighlightingOnLoad();

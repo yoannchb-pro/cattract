@@ -35,7 +35,7 @@ const defaultOptions: Options = {
 };
 
 const default3dOptions: With3dOptions = {
-  maxAngle: 45,
+  maxAngle: 35,
   perspective: 500,
 };
 
@@ -56,7 +56,7 @@ class Cattract {
       this.options.with_3d = Object.assign(
         {},
         default3dOptions,
-        this.options.with_3d
+        this.options.with_3d === true ? {} : this.options.with_3d
       );
     }
     this.target.style.transformOrigin = "center";
@@ -295,7 +295,7 @@ class Cattract {
 
 document.addEventListener("DOMContentLoaded", function () {
   document.body.addEventListener("mousemove", function (event) {
-    const [x, y] = [event.pageX, event.pageY];
+    const [x, y] = [event.clientX, event.clientY];
     for (const instance of instances) {
       if (!instance.target.isConnected) {
         instance.stop();

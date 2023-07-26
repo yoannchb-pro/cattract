@@ -29,11 +29,23 @@ const options = [
     inverted: true,
   },
   {
+    inverted: "x",
+  },
+  {
     axe: "x",
   },
   {
+    with_3d: true,
+  },
+  {
+    detectionRadius: "full",
+  },
+  {
     with_3d: {
+      axe: "y",
       maxAngle: 30,
+      perspective: 400,
+      inverted: true,
     },
   },
 ];

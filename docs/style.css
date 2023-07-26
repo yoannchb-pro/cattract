@@ -46,7 +46,7 @@ button {
   text-decoration: none;
   color: #eee;
   border-radius: 99rem;
-  width: 11rem;
+  width: 12.5rem;
   text-align: center;
 }
 
@@ -55,12 +55,13 @@ button {
   display: flex;
   flex-wrap: wrap;
   padding: 1rem;
+  align-items: center;
 }
 
 .example-block {
   position: relative;
   flex-grow: 1;
-  width: clamp(10rem, 15rem, 100%);
+  width: clamp(15rem, 15rem, 100%);
   height: 20rem;
   background-color: transparent;
   border: thin dashed #0093e9;
@@ -79,6 +80,7 @@ details > summary {
   list-style: none;
   text-align: end;
   cursor: pointer;
+  margin-bottom: 0.5rem;
 }
 
 details > summary::-webkit-details-marker {
@@ -96,9 +98,11 @@ details {
 
 .overlay-code {
   background-color: #121212;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .main-section {
     flex-direction: column;
     height: auto;

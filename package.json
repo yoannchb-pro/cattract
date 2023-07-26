@@ -1,5 +1,5 @@
 {
-  "name": "cattract",
+  "name": "@yoannchb/cattract",
   "version": "1.0.0",
   "description": "Animate anything just like it was attracted by the cursor",
   "main": "./dist/index.js",

@@ -24,6 +24,7 @@ Or with the cdn
 
 ```ts
 import Cattract from "cattract";
+//Or
 const Cattract = require("cattract");
 ```
 
@@ -33,7 +34,7 @@ const Cattract = require("cattract");
 const animation = new Cattract(document.querySelector("#button"));
 ```
 
-Or
+Or with specified options
 
 ```ts
 const animation = new Cattract(document.querySelector("#button"), {
